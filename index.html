@@ -1,0 +1,183 @@
+<html>
+  <head>
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="manifest" href="manifest.json">
+    <script src="/three.js"></script>
+    <script src="/Orbit.js"></script>
+    <script src="/Loader.js"></script>
+    <script src="/script.js"></script>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <!--
+    To update page:
+      surge . skinny-dippiing.surge.sh
+
+      Screen Layout:
+
+      Fuel calculator (in element)
+      Quick access TO refrences (in element)
+      Checklists/Reminders
+        Flyer Checklist
+        Reminders, meaning when doing this task dont forget to do this
+      Panel layout/search button
+      Cockpit switch layout/search button
+      List of nonstandard abbreviations
+      00-21-1 data with pre filled out forms button
+
+      Required updates
+        > Fix buttons - wrong sizes COMPLETED
+        > Missing panels on PANEL CHART
+        > Checklists look stupid on mobile COMPLETED
+        > Need more checklists (Doing Mx) COMPLETED
+        > Mesh change color upon search on panel Lookup    COMPLETED
+        > Make the prefilled out forms (removing panels, changing wheels, LOX servicing) COMPLETED (add more)
+
+    -->
+
+    <!--Usage Warning-->
+    <div class="item">
+      <h2>WARNING</h2>
+      <p>This tool is a refrence only. <strong>All information should be verified with TOs.</strong> All information included comes from public sources which may be outdated.</p>
+    </div>
+
+    <!--Fuel Load Calc-->
+    <div class="item">
+      <h3>Fuel Load calculator</h3>
+      <div>
+        <select id="config">
+          <option value="1">Slick</option>
+          <option value="2">Wing Tanks</option>
+          <option value="3">Centerline</option>
+          <option value="4">Wing tanks and Centerline</option>
+        </select>
+        <select id="model">
+          <option value="1">C Model</option>
+          <option value="2">D Model</option>
+        </select><br>
+        <input type="number" id="fuel-quantity" placeholder="Amount on Totalizer">
+        <button onclick="fuelQuan()">Submit</button>
+        <p id="fuel-result"></p>
+      </div>
+    </div>
+
+    <div class="item">
+      <h3 id="julian"></h3>
+    </div>
+
+    <!--Quick access TO Refrence-->
+    <div class="item">
+      <h3>TO Search</h3>
+      <input type="text" id="searchTO" onkeydown="searchTO()" placeholder="Job Search">
+
+      <div id="to-search-res" class="searchBar">
+
+      </div>
+    </div>
+
+    <!--Panel Lookup-->
+    <div class="item">
+      <h3>Tools</h3>
+      <button onclick="startPanelScreen()" style="width: 130px">Panel Lookup</button>
+      <button onclick="openIMDS()" style="width: 130px">Refrences</button>
+      <!--<button onclick="alert('Adding next update')" style="width: 130px">Cockpit layout</button>-->
+    </div>
+
+    <div id="panel-3d">
+      <div id="loader-wrapper">
+        <p id="loader-status">0% Loaded</p>
+      </div>
+      <div class="top-bar">
+        <button onclick="closePanelScreen()" style="font-size: 25px">X</button>
+        <input type="number" placeholder="Panel Number" id="searchPanel">
+        <button onclick="searchPanel()">Submit</button>
+      </div>
+      <canvas id="panel-canvas"></canvas>
+    </div>
+
+    <div id="IMDS">
+      <div>
+        <button  onclick="document.getElementById('IMDS').style.display = 'none'" style="font-size: 25px">X</button>
+      </div>
+      <div id="imds-buttons"></div>
+      <div id="imds-results"></div>
+    </div>
+
+    <!--Checklists-->
+    <div class="item">
+      <h3>Checklists</h3>
+      <button onclick="openChecklist('flyer-ff')">Flyer Checklist (First Flight)</button>
+      <button onclick="openChecklist('flyer-pl')">Flyer Checklist (Launch)</button>
+      <button onclick="openChecklist('flyer-pr')">Flyer Checklist (Recovery)</button>
+      <button onclick="openChecklist('flyer-th')">Flyer Checklist (Thru-Flight)</button>
+      <button onclick="openChecklist('flyer-ed')">Flyer Checklist (End of Day)</button>
+      <button onclick="openChecklist('job')">Basic Job Checklist</button>
+      <button onclick="openChecklist('towing')">Towing Checklist</button>
+    </div>
+
+    <div id="checklists">
+      <button onclick="document.getElementById('checklists').style.display = 'none'">X</button>
+      <div id="checklist-items"></div>
+    </div>
+
+    <!-- Forms -->
+    <div class="item">
+      <h3>Pre-filled out forms</h3>
+      <p>Forms are filled out IAW 00-20-1 <a href="https://www.tinker.af.mil/Portals/106/Documents/Technical%20Orders/00-20-1.pdf">here</a>. This document is outdated and approved for public. JCNs are fake</p>
+      <button onclick="openForms('access')">Access Door/Panel open/close</button>
+      <button onclick="openForms('lox-serv')">LOX Servicing</button>
+      <button onclick="document.getElementById('H-content').style.display = 'block'">781H Carry Forward</button>
+      <!--<button onclick="alert('In development')">NLG Tire</button>-->
+    </div>
+
+    <div id="H-content">
+      <button onclick="document.getElementById('H-content').style.display = 'none'">X<button>
+      <img src="/781H-images-0.jpg" class="h781">
+      <img src="/781H-images-1.jpg" class="h781">
+    </div>
+    <div id="forms">
+      <canvas id="form-canvas" onclick="document.getElementById('forms').style.display = 'none'"></canvas>
+    </div>
+
+    <!--Torque Formula-->
+    <div class="item">
+      <h3>Torque Converter</h3>
+      <p><strong>Warning</strong> this may not be accurate. Units are irrelavent. <a onclick="document.getElementById('torque-calc').style.display='block'" style="cursor: pointer; text-decoration: underline">How is this calculated?</a></p>
+      <br>
+      <div id="torque-calc">
+        <!--How is this calculated?-->
+        <button onclick="document.getElementById('torque-calc').style.display='none'">X</button>
+        <h2>How is this number calculated?</h2>
+        <p>The torque equation is as follows:</p>
+        <strong>
+          T<sub>applied</sub> = T<sub>setting</sub> × ( (L + E × cos(A)) / L )
+        </strong>
+        <p>
+          Where:<br>
+          T<sub>setting</sub> = Setting on torque wrench<br>
+          T<sub>applied</sub> = Desired torque at fastener<br>
+          L = Length of torque wrench (center of handle to drive)<br>
+          E = Length of extension (center of drive to fastener)<br>
+          A = Angle of extension (0deg being directly outward)
+        </p>
+      </div>
+      <canvas id="torqueCanvas"></canvas><br>
+      <input type="number" placeholder="Torque Wrench Length (IN)" id="tw-length">
+      <input type="number" placeholder="Extender Length (IN)" id="ex-length">
+      <input type="number" placeholder="Original Torage" id="origin-torque">
+      <select id="deg">
+        <option value="0">0deg</option>
+        <option value="1">45deg</option>
+        <option value="2">90deg</option>
+        <option value="3">135deg</option>
+        <option value="4">180deg</option>
+        <option value="5">225deg</option>
+        <option value="6">270deg</option>
+        <option value="7">315deg</option>
+      </select>
+      <button onclick="torqueSubmit()">Submit</button>
+      <p id="torqueRes"></p>
+    </div>
+  </body>
+</html>
