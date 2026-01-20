@@ -83,7 +83,26 @@ option {
   background-color: white;
   overflow-y: scroll
 }
-
+#checklist-items {
+  padding: 16px
+}
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding 6px;
+  cursor: pointer;
+  margin-top: 8px
+}
+.cb[type="checkbox"] {
+  accent-color: #258c00;
+}
+.option:has(input:checked) {
+  background-color: #d6d6d6;
+  text-decoration-line: line-through;
+  text-decoration-color: #525252;
+  text-decoration-thickness: 2px
+}
 #forms {
   position: fixed;
   top: 0;
