@@ -3,11 +3,11 @@
     <title>Document</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="manifest" href="manifest.json">
-    <script src="three.js"></script>
-    <script src="Orbit.js"></script>
-    <script src="Loader.js"></script>
-    <script src="script.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <script src="/three.js"></script>
+    <script src="/Orbit.js"></script>
+    <script src="/Loader.js"></script>
+    <script src="/script.js"></script>
+    <link rel="stylesheet" href="/style.css">
   </head>
   <body>
     <!--
@@ -39,7 +39,7 @@
     <!--Usage Warning-->
     <div class="item">
       <h2>WARNING</h2>
-      <p>This tool is a refrence only. <strong>All information should be verified with TOs.</strong> All information included comes from public sources which may be outdated.</p>
+      <p>This tool is a reference only. <strong>All information should be verified with TOs.</strong> All information included comes from public sources which may be outdated.</p>
     </div>
 
     <!--Fuel Load Calc-->
@@ -80,7 +80,7 @@
     <div class="item">
       <h3>Tools</h3>
       <button onclick="startPanelScreen()" style="width: 130px">Panel Lookup</button>
-      <button onclick="openIMDS()" style="width: 130px">Refrences</button>
+      <button onclick="openIMDS()" style="width: 130px">References</button>
       <!--<button onclick="alert('Adding next update')" style="width: 130px">Cockpit layout</button>-->
     </div>
 
@@ -105,36 +105,29 @@
     </div>
 
     <!--Checklists-->
-    <div class="item">
+    <div class="item" id="ch">
       <h3>Checklists</h3>
-      <button onclick="openChecklist('flyer-ff')">Flyer Checklist (First Flight)</button>
-      <button onclick="openChecklist('flyer-pl')">Flyer Checklist (Launch)</button>
-      <button onclick="openChecklist('flyer-pr')">Flyer Checklist (Recovery)</button>
-      <button onclick="openChecklist('flyer-th')">Flyer Checklist (Thru-Flight)</button>
-      <button onclick="openChecklist('flyer-ed')">Flyer Checklist (End of Day)</button>
-      <button onclick="openChecklist('job')">Basic Job Checklist</button>
-      <button onclick="openChecklist('towing')">Towing Checklist</button>
     </div>
 
     <div id="checklists">
       <button onclick="document.getElementById('checklists').style.display = 'none'">X</button>
+      <h2 id="cl-name" style="margin-left: 16px"></h2>
       <div id="checklist-items"></div>
     </div>
 
     <!-- Forms -->
     <div class="item">
       <h3>Pre-filled out forms</h3>
-      <p>Forms are filled out IAW 00-20-1 <a href="https://www.tinker.af.mil/Portals/106/Documents/Technical%20Orders/00-20-1.pdf">here</a>. This document is outdated and approved for public. JCNs are fake</p>
+      <p>Forms are filled out IAW 00-20-1 <a href="https://www.tinker.af.mil/Portals/106/Documents/Technical%20Orders/00-20-1.pdf">here</a>. This document is outdated and approved for public access. JCNs are fake</p>
       <button onclick="openForms('access')">Access Door/Panel open/close</button>
       <button onclick="openForms('lox-serv')">LOX Servicing</button>
       <button onclick="document.getElementById('H-content').style.display = 'block'">781H Carry Forward</button>
-      <!--<button onclick="alert('In development')">NLG Tire</button>-->
     </div>
 
     <div id="H-content">
       <button onclick="document.getElementById('H-content').style.display = 'none'">X<button>
-      <img src="/ref/781H-images-0.jpg" class="h781">
-      <img src="/ref/781H-images-1.jpg" class="h781">
+      <img src="/781H-images-0.jpg" class="h781">
+      <img src="/781H-images-1.jpg" class="h781">
     </div>
     <div id="forms">
       <canvas id="form-canvas" onclick="document.getElementById('forms').style.display = 'none'"></canvas>
@@ -143,7 +136,7 @@
     <!--Torque Formula-->
     <div class="item">
       <h3>Torque Converter</h3>
-      <p><strong>Warning</strong> this may not be accurate. Units are irrelevant. <a onclick="document.getElementById('torque-calc').style.display='block'" style="cursor: pointer; text-decoration: underline">How is this calculated?</a></p>
+      <p><strong>Warning</strong> this may not be accurate. Units are irrelavent. <a onclick="document.getElementById('torque-calc').style.display='block'" style="cursor: pointer; text-decoration: underline">How is this calculated?</a></p>
       <br>
       <div id="torque-calc">
         <!--How is this calculated?-->
@@ -160,6 +153,8 @@
           L = Length of torque wrench (center of handle to drive)<br>
           E = Length of extension (center of drive to fastener)<br>
           A = Angle of extension (0deg being directly outward)
+          <br><br>
+          Units are irrelavent because this formula scales T<sub>applied</sub>
         </p>
       </div>
       <canvas id="torqueCanvas"></canvas><br>
@@ -181,7 +176,3 @@
     </div>
   </body>
 </html>
-
-
-
-
