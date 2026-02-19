@@ -1,178 +1,317 @@
+/* ============================================
+   Reference App Theme (Tactical Clean)
+   Drop-in replacement for your current CSS
+   ============================================ */
+
+:root{
+  /* Core */
+  --bg: #0f1214;
+  --bg-2: #12171a;
+  --surface: #151b1f;
+  --surface-2: #1a2227;
+
+  /* Text */
+  --text: #e7edf2;
+  --text-dim: #a9b4be;
+  --text-faint: #7f8a94;
+
+  /* Accent */
+  --accent: #37d65a;       /* your green, refined */
+  --accent-2: #1fb34a;     /* darker green for hover */
+  --accent-soft: rgba(55, 214, 90, 0.16);
+
+  /* Lines / shadows */
+  --line: rgba(231, 237, 242, 0.10);
+  --line-2: rgba(231, 237, 242, 0.06);
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
+
+  /* Light screens */
+  --paper: #f6f7f8;
+  --paper-text: #101214;
+  --paper-line: rgba(16, 18, 20, 0.12);
+
+  --radius: 12px;
+  --radius-sm: 10px;
+}
+
+* { box-sizing: border-box; }
+
 body {
-  background-color: #292929;
+  margin: 0;
+  background:
+    radial-gradient(1000px 700px at 20% -10%, rgba(55,214,90,0.08), transparent 55%),
+    radial-gradient(900px 600px at 90% 10%, rgba(55,214,90,0.04), transparent 55%),
+    linear-gradient(180deg, var(--bg), var(--bg-2));
+  color: var(--text);
   font-family:
-    ui-monospace,          /* Newer Apple/Win10+ */
-    SFMono-Regular,        /* Apple */
-    Menlo,                 /* macOS */
-    Consolas,              /* Windows */
-    "Liberation Mono",     /* Linux */
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    "Liberation Mono",
     "Noto Sans Mono",
     monospace;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
-.item {
-  background-color: #292929;
-  color: white;
-  padding: 8px;
-  height: auto;
-  margin: 8px;
 
-  border-radius: 10px;
-  border: 2px solid #258c00
-}
+/* Links */
 a {
-  color: #258c00
+  color: var(--accent);
+  text-decoration: none;
 }
-.TOSearch-item {
-  padding: 6px;
-  font-size: 19px;
-  cursor: pointer
+a:hover {
+  color: var(--accent-2);
+  text-decoration: underline;
 }
-#to-search-res {
-  height: 120px;
-  overflow-y: scroll
-}
-#panel-3d {
-  display: none;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  z-index: 100
-}
-#panel-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 0
-}
+
+/* Top bar gets a subtle glass + divider so it feels “real” */
 .top-bar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: auto;
-  z-index: 10000
+  z-index: 10000;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  /* background: rgba(15, 18, 20, 0.72); */
+  border-bottom: 1px solid var(--line-2);
 }
-input {
-  padding: 10px
+
+/* Card / item look */
+.item {
+  background: linear-gradient(180deg, var(--surface), var(--surface-2));
+  color: var(--text);
+  padding: 10px 12px;
+  height: auto;
+  margin: 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 0 rgba(255,255,255,0.02);
 }
-button {
-  padding: 10px;
-  border-radius: 0px;
-  color: black;
-  border: none;
+
+/* If you have headers inside items, they’ll pop */
+.item h1, .item h2, .item h3, .item h4, .item h5, .item h6 {
+  margin: 0.2rem 0 0.5rem 0;
+}
+.item small, .item .muted {
+  color: var(--text-dim);
+}
+
+/* Search result list item */
+.TOSearch-item {
+  padding: 8px 10px;
+  font-size: 17px;
+  cursor: pointer;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  color: var(--text);
+}
+.TOSearch-item:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: var(--line-2);
+}
+.TOSearch-item:active {
+  background: rgba(55,214,90,0.10);
+  border-color: rgba(55,214,90,0.30);
+}
+
+/* Search results box */
+#to-search-res {
+  height: 120px;
+  overflow-y: auto;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-2);
+  background: rgba(0,0,0,0.18);
   margin: 8px;
-  background-color: white
+  padding: 6px;
 }
+
+/* Inputs / buttons / selects — clean + consistent */
+input, select, button {
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+input {
+  padding: 10px 12px;
+  margin: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(0,0,0,0.20);
+  color: var(--text);
+}
+input::placeholder {
+  color: var(--text-faint);
+}
+input:focus {
+  border-color: rgba(55,214,90,0.45);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+button {
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--paper-text);
+  border: 1px solid rgba(0,0,0,0.10);
+  margin: 8px;
+  background: linear-gradient(180deg, #ffffff, #e9edf0);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+  cursor: pointer;
+}
+button:hover {
+  filter: brightness(0.98);
+}
+button:active {
+  transform: translateY(1px);
+}
+
+/* Optional: add a green “primary” button style if you want */
+button.primary {
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  color: #061006;
+  border: 1px solid rgba(0,0,0,0.18);
+}
+
+/* Selects: keep black text? Nah — match theme. */
 select {
-  padding: 10px;
-  border-radius: 0px;
-  color: black;
-  border: none;
-  font-size: 13px
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--text);
+  border: 1px solid var(--line);
+  background: rgba(0,0,0,0.20);
+  margin: 8px;
+}
+select:focus {
+  border-color: rgba(55,214,90,0.45);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 option {
-  padding: 20px
+  padding: 20px;
+  color: #111;
 }
-#checklists {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
-  background-color: white;
-  overflow-y: scroll
+
+/* Checkbox styling */
+.cb[type="checkbox"] {
+  accent-color: var(--accent);
 }
-#checklist-items {
-  padding: 16px
-}
+
+/* Your .option block had a missing colon. Fixing it. */
 .option {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding 6px;
+  padding: 6px;   /* fixed */
   cursor: pointer;
-  margin-top: 8px
+  margin-top: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--line-2);
+  background: rgba(255,255,255,0.02);
 }
-.cb[type="checkbox"] {
-  accent-color: #258c00;
+.option:hover {
+  background: rgba(255,255,255,0.04);
 }
+
 .option:has(input:checked) {
   background-color: #d6d6d6;
   text-decoration-line: line-through;
   text-decoration-color: #525252;
   text-decoration-thickness: 2px
 }
-#forms {
+
+/* Fullscreen panels */
+#panel-3d {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background: rgba(0,0,0,0.55);
+}
+
+/* Canvas stays as you had it */
+#panel-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+/* Light “screens” (checklists/forms/imds/etc.)
+   Keep them white-ish but make them consistent and less blinding.
+*/
+#checklists,
+#forms,
+#IMDS,
+#H-content,
+#torque-calc,
+#legal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #FFFFFF;
   display: none;
-  overflow-y: scroll;
-  overflow-x: scroll
+  overflow-y: auto;
+  overflow-x: auto;
+  background: var(--paper);
+  color: var(--paper-text);
 }
-#IMDS {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #FFFFFF;
-  display: none;
-  overflow-y: scroll;
+
+/* Give inner content a max-width feel without breaking your layout */
+#checklist-items,
+#imds-results,
+#torque-calc,
+#legal {
+  padding: 16px;
 }
-#imds-results {
-  margin-left: 8px
+
+/* Headings on light pages */
+h5 {
+  color: rgba(16,18,20,0.72);
 }
-.h781 {
-  width: 100%;
-  height: auto
-}
-#H-content {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: white;
-  display: none;
-  overflow-y: scroll
-}
-#torque-calc {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: white;
-  display: none;
-  color: black;
-  overflow-y: scroll;
-  padding: 8px
-}
+
+/* Loader */
 #loader-wrapper {
   position: fixed;
   z-index: 100000;
   top: 50%;
   left: 50%;
+  transform: translate(-50%, -50%);
 }
 #loader-status {
-  color: black;
+  color: var(--paper-text);
 }
-#legal {
-  display: none;
-  background-color: white;
-  position: fixed;
-  top: 0;
-  left: 0;
+
+/* Images */
+.h781 {
   width: 100%;
-  height: 100%;
-  padding: 8px;
-  overflow-y: scroll
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid var(--line);
 }
-h5 {
-  color: #3b3b3b
+
+/* Scrollbar (WebKit: Safari/Chrome) */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.15);
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(231,237,242,0.18);
+  border-radius: 999px;
+  border: 2px solid rgba(0,0,0,0.15);
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(231,237,242,0.28);
+}
+
+/* Accessibility: reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; }
+  button:active { transform: none; }
 }
