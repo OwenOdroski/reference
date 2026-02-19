@@ -39,7 +39,7 @@
     <!--Usage Warning-->
     <div class="item">
       <h2>WARNING</h2>
-      <p>This is reference only and should not be used in place of TOs. Read <a onclick="openLegal()">here</a> before use.</p>
+      <p>This is reference only and should not be used in place of TOs. Read <a onclick="openLegal()" style="text-decoration: underline">this</a> before use.</p>
     </div>
 
     <!--Fuel Load Calc-->
@@ -97,7 +97,7 @@
         <p id="loader-status">0% Loaded</p>
       </div>
       <div class="top-bar">
-        <button onclick="closePanelScreen()" style="font-size: 25px">X</button>
+        <button onclick="closePanelScreen()" style="font-size: 15px">✕</button>
         <input type="number" placeholder="Panel Number" id="searchPanel">
         <button onclick="searchPanel()">Submit</button>
       </div>
@@ -106,7 +106,7 @@
 
     <div id="IMDS">
       <div>
-        <button  onclick="document.getElementById('IMDS').style.display = 'none'" style="font-size: 25px">X</button>
+        <button onclick="document.getElementById('IMDS').style.display = 'none'" style="font-size: 25px">✕</button>
       </div>
       <div id="imds-buttons"></div>
       <div id="imds-results"></div>
@@ -118,7 +118,7 @@
     </div>
 
     <div id="checklists">
-      <button onclick="document.getElementById('checklists').style.display = 'none'">X</button>
+      <button onclick="document.getElementById('checklists').style.display = 'none'">✕</button>
       <h2 id="cl-name" style="margin-left: 16px"></h2>
       <div id="checklist-items"></div>
     </div>
@@ -163,7 +163,7 @@
     </div>
 
     <div id="legal">
-      <button onclick="document.getElementById('legal').style.display='none'">X</button>
+      <button onclick="document.getElementById('legal').style.display='none'">✕</button>
       <h3>Legal disclaimers and sources of information</h3>
       <p>All information in this tool is derived from public sources. The sources are listed below. The information included may be incorrect because it is either from released tech data from F-16A/B variants, outdated TOs approved for public release, or public sources with little to no credibility.</p>
       <p>All data in this tool is stored in a single JSON file. Format is under JavaScript object syntax and is unencrypted.</p>
@@ -172,7 +172,7 @@
       <h4>Fuel Load Calculator</h4>
       <p>Information for this has been widely known by the public for years. Sources are still listed below. The sources state the full fuel capacity of the F-16C/D </p>
       <h5>SOURCES</h5>
-      <p>From an official USAF website, it states the full internal fuel load <a href="https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104505/f-16-fighting-falcon/">SOURCE HERE</a></p>
+      <p>From an official USAF website, states the full internal fuel load <a href="https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104505/f-16-fighting-falcon/">SOURCE HERE</a></p>
       <p>Source states how many gallons the centerline and wing external fuel tank load <a href="https://blueaero.com/wp-content/uploads/2022/09/Eaton-F16-Ext-Fuel-Tank.pdf">SOURCE HERE</a></p>
 
       <h4>Oil Consumption Calculator</h4>
@@ -195,7 +195,7 @@
       <a href="https://www.tinker.af.mil/Portals/106/Documents/Technical%20Orders/00-20-1.pdf">SOURCE HERE</a>
 
       <h4>Torque converter</h4>
-      <p>This does not change the torque applied to the fastener. When using an inline extension, torque wrench settings must be adjusted to prevent over or under tightening of a fastener, using standard torque compensation formulas. Always verify torque procedures with applicable Technical Orders. The formula and explantion are below.</p>
+      <p>This does not change the torque applied to the fastener. When using an inline extension, torque wrench settings must be adjusted to prevent over- or under-tightening of a fastener, using standard torque compensation formulas. Always verify torque procedures with applicable Technical Orders. The formula and explantion are below.</p>
       <p>The torque equation is as follows:</p>
       <strong>
         T<sub>applied</sub> = T<sub>setting</sub> × ( (L + E × cos(A)) / L )
@@ -213,4 +213,3 @@
     </div>
   </body>
 </html>
-
