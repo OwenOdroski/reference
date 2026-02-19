@@ -29,8 +29,17 @@ fetch('/ref/db.json')
     let ch = document.getElementById('ch')
     console.log(data)
     for(let curr of checklists.names) {
+      let width = '45%'
+
+      if(window.innerWidth < 430) {
+        width = '100%'
+      } else if(window.innerWidth > 950) {
+        width = '23%'
+      }
+
       let button = document.createElement('button')
       button.setAttribute('onclick', `openChecklist("${curr.obj_name}")`)
+      button.style.width = width
       button.innerHTML = curr.name
       ch.appendChild(button)
     }
@@ -146,19 +155,7 @@ function startPanelScreen() {
     light = new THREE.AmbientLight(0xffffff, 1.2);
     scene.add(light);
 
-
     group = new THREE.Group()
-
-    // const pmrem = new THREE.PMREMGenerator(renderer);
-    // pmrem.compileEquirectangularShader();
-    //
-    // new THREE.RGBELoader()
-    //   .setDataType(THREE.UnsignedByteType)
-    //   .load('bg.hdr.png', function (texture) {
-    //     const envMap = pmrem.fromEquirectangular(texture).texture;
-    //     scene.environment = envMap;
-    //     texture.dispose();
-    //   });
 
     const loader = new THREE.GLTFLoader();
     loader.load('/ref/f16.glb', (gltf) => {
@@ -200,63 +197,64 @@ function startPanelScreen() {
     }
 
     camera.position.set(100, 60, 100);
-  }
-  animate()
 
-  const raycaster = new THREE.Raycaster();
-  const pointer = new THREE.Vector2();
-  const canvas3 = renderer.domElement;
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    const canvas3 = renderer.domElement;
 
-  canvas3.addEventListener('click', (event) => {
-    // Convert screen coordinates to NDC
-    pointer.x = (event.clientX / canvas3.clientWidth) * 2 - 1;
-    pointer.y = -(event.clientY / canvas3.clientHeight) * 2 + 1;
+    canvas3.addEventListener('click', (event) => {
+      // Convert screen coordinates to NDC
+      pointer.x = (event.clientX / canvas3.clientWidth) * 2 - 1;
+      pointer.y = -(event.clientY / canvas3.clientHeight) * 2 + 1;
 
-    raycaster.setFromCamera(pointer, camera);
+      raycaster.setFromCamera(pointer, camera);
 
-    // Replace `targetMesh` with the mesh you want to test against
-    if(mode == 'dev') {
-      const intersects = raycaster.intersectObject(scene, true);
+      // Replace `targetMesh` with the mesh you want to test against
+      if(mode == 'dev') {
+        const intersects = raycaster.intersectObject(scene, true);
 
-      if (intersects.length > 0) {
-        if(intersects[0].object.name[0] == 'O') {
-          let point = intersects[0].point;
+        if (intersects.length > 0) {
+          if(intersects[0].object.name[0] == 'O') {
+            let point = intersects[0].point;
 
-          let hit = intersects[0];
-          let vec = hit.point
+            let hit = intersects[0];
+            let vec = hit.point
 
-          let mesh = new THREE.Mesh(
-            new THREE.SphereGeometry(1, 15, 15),
-            new THREE.MeshBasicMaterial({color: 0xFF0000})
-          )
-          mesh.position.x = vec.x
-          mesh.position.y = vec.y
-          mesh.position.z = vec.z
-          scene.add(mesh)
+            let mesh = new THREE.Mesh(
+              new THREE.SphereGeometry(1, 15, 15),
+              new THREE.MeshBasicMaterial({color: 0xFF0000})
+            )
+            mesh.position.x = vec.x
+            mesh.position.y = vec.y
+            mesh.position.z = vec.z
+            scene.add(mesh)
 
-          let panelNumber = prompt("Panel Number")
-          let name = prompt("Panel Name")
-          let type = prompt("Panel or Door")
+            let panelNumber = prompt("Panel Number")
+            let name = prompt("Panel Name")
+            let type = prompt("Panel or Door")
 
-          if(panelNumber == undefined || panelNumber == "") {
-            return
+            if(panelNumber == undefined || panelNumber == "") {
+              return
+            }
+
+            newPanels.push({cords: [vec.x, vec.y, vec.z], name: name, number: panelNumber, type: type})
+          } else {
+            alert(allPanels[JSON.parse(intersects[0].object.name)].number + '\n' + JSON.parse(intersects[0].object.name))
           }
+        }
+      } else if(mode == 'view') {
+        const intersects = raycaster.intersectObject(group, true);
 
-          newPanels.push({cords: [vec.x, vec.y, vec.z], name: name, number: panelNumber, type: type})
-        } else {
-          alert(allPanels[JSON.parse(intersects[0].object.name)].number + '\n' + JSON.parse(intersects[0].object.name))
+        if(intersects.length > 0) {
+          let panel = allPanels[intersects[0].object.name]
+          alert(panel.type + ' Number: ' + panel.number)
         }
       }
-    } else if(mode == 'view') {
-      const intersects = raycaster.intersectObject(group, true);
-
-      if(intersects.length > 0) {
-        let panel = allPanels[intersects[0].object.name]
-        alert(panel.type + ' Number: ' + panel.number)
-      }
-    }
-  });
-
+    });
+  } else {
+    s.style.display = 'none'
+  }
+  animate()
 }
 
 function closePanelScreen() {
@@ -264,9 +262,6 @@ function closePanelScreen() {
   canvas.style.display = 'none'
 
   cancelAnimationFrame(animation)
-
-  // Here I have to destroy the 3d model and clean up the scene
-
 
   let c = document.getElementById('panel-canvas')
   c.style.display = 'none'
@@ -521,7 +516,7 @@ function updateTorqueIn(deg) {
 
   ctx.beginPath();
   ctx.arc(w(20) + (w(20)), h(50) - (h(30) / 2) + (h(30) / 2), h(15), 0, 2 * Math.PI);
-  ctx.fillStyle = '#292929'
+  ctx.fillStyle = '#151b1f'
   ctx.fill();
 
   ctx.beginPath();
@@ -565,4 +560,3 @@ window.setTimeout(function() {
     updateTorqueIn(deg)
   })
 }, 100)
-
