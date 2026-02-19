@@ -3,11 +3,11 @@
     <title>Document</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="manifest" href="manifest.json">
-    <script src="/ref/three.js"></script>
-    <script src="/ref/Orbit.js"></script>
-    <script src="/ref/Loader.js"></script>
-    <script src="/ref/script.js"></script>
-    <link rel="stylesheet" href="/ref/style.css">
+    <script src="/three.js"></script>
+    <script src="/Orbit.js"></script>
+    <script src="/Loader.js"></script>
+    <script src="/script.js"></script>
+    <link rel="stylesheet" href="/style.css">
   </head>
   <body>
     <!--
@@ -39,7 +39,7 @@
     <!--Usage Warning-->
     <div class="item">
       <h2>WARNING</h2>
-      <p>This tool is a reference only. <strong>All information should be verified with TOs.</strong> All information included comes from public sources which may be outdated.</p>
+      <p>This is reference only and should not be used in place of TOs. Read <a onclick="openLegal()">here</a> before use.</p>
     </div>
 
     <!--Fuel Load Calc-->
@@ -60,6 +60,14 @@
         <button onclick="fuelQuan()">Submit</button>
         <p id="fuel-result"></p>
       </div>
+    </div>
+
+    <!-- Oil Consumption limit calc -->
+    <div class="item">
+      <h3>Oil Consumption Calculator</h3>
+      <input type="number" id="fl-time" placeholder="Engine Operating Time">
+      <button onclick="oilCons()">Submit</button>
+      <p id="cuns-res"></p>
     </div>
 
     <div class="item">
@@ -118,7 +126,6 @@
     <!-- Forms -->
     <div class="item">
       <h3>Pre-filled out forms</h3>
-      <p>Forms are filled out IAW 00-20-1 <a href="https://www.tinker.af.mil/Portals/106/Documents/Technical%20Orders/00-20-1.pdf">here</a>. This document is outdated and approved for public access. JCNs are fake</p>
       <button onclick="openForms('access')">Access Door/Panel open/close</button>
       <button onclick="openForms('lox-serv')">LOX Servicing</button>
       <button onclick="document.getElementById('H-content').style.display = 'block'">781H Carry Forward</button>
@@ -126,8 +133,8 @@
 
     <div id="H-content">
       <button onclick="document.getElementById('H-content').style.display = 'none'">X<button>
-      <img src="/ref/781H-images-0.jpg" class="h781">
-      <img src="/ref/781H-images-1.jpg" class="h781">
+      <img src="/781H-images-0.jpg" class="h781">
+      <img src="/781H-images-1.jpg" class="h781">
     </div>
     <div id="forms">
       <canvas id="form-canvas" onclick="document.getElementById('forms').style.display = 'none'"></canvas>
@@ -136,27 +143,7 @@
     <!--Torque Formula-->
     <div class="item">
       <h3>Torque Converter</h3>
-      <p><strong>Warning</strong> this may not be accurate. Units are irrelevant. <a onclick="document.getElementById('torque-calc').style.display='block'" style="cursor: pointer; text-decoration: underline">How is this calculated?</a></p>
       <br>
-      <div id="torque-calc">
-        <!--How is this calculated?-->
-        <button onclick="document.getElementById('torque-calc').style.display='none'">X</button>
-        <h2>How is this number calculated?</h2>
-        <p>The torque equation is as follows:</p>
-        <strong>
-          T<sub>applied</sub> = T<sub>setting</sub> × ( (L + E × cos(A)) / L )
-        </strong>
-        <p>
-          Where:<br>
-          T<sub>setting</sub> = Setting on torque wrench<br>
-          T<sub>applied</sub> = Desired torque at fastener<br>
-          L = Length of torque wrench (center of handle to drive)<br>
-          E = Length of extension (center of drive to fastener)<br>
-          A = Angle of extension (0deg being directly outward)
-          <br><br>
-          Units are irrelevant because this formula scales T<sub>applied</sub>
-        </p>
-      </div>
       <canvas id="torqueCanvas"></canvas><br>
       <input type="number" placeholder="Torque Wrench Length (IN)" id="tw-length">
       <input type="number" placeholder="Extender Length (IN)" id="ex-length">
@@ -174,6 +161,55 @@
       <button onclick="torqueSubmit()">Submit</button>
       <p id="torqueRes"></p>
     </div>
+
+    <div id="legal">
+      <button onclick="document.getElementById('legal').style.display='none'">X</button>
+      <h3>Legal disclaimers and sources of information</h3>
+      <p>All information in this tool is derived from public sources. The sources are listed below. The information included may be incorrect because they are either from released tech data from F-16A/B variants, outdated TOs approved for public release, or public sources with little to no credibility.</p>
+      <p>All data in this tool is stored in a single JSON file. Format is under JavaScript object syntax and is unencrypted.</p>
+      <p>There is no DoD instrution, DAFI, or AFI that prohibits note taking. This is note taking, with ease of use tools, and better navigation.<p>
+
+      <h4>Fuel Load Calculator</h4>
+      <p>Information for this has been widely known by the public for years. Sources are still listed below. The sources state the full fuel capacity of the F-16C/D </p>
+      <h5>SOURCES</h5>
+      <p>From an official USAF website, states the full internal fuel load <a href="https://www.af.mil/About-Us/Fact-Sheets/Display/Article/104505/f-16-fighting-falcon/">SOURCE HERE</a></p>
+      <p>Source states how many gallons the centerline and wing external fuel tank load <a href="https://blueaero.com/wp-content/uploads/2022/09/Eaton-F16-Ext-Fuel-Tank.pdf">SOURCE HERE</a></p>
+
+      <h4>Oil Consumption Calculator</h4>
+      <p>Source states 1.5 hpts of oil per engine operating hour <a href="https://www.f-16.net/forum/viewtopic.php?f=2&t=10994">SOURCE HERE</a></p>
+
+      <h4>3D Interactive Panel Chart</h4>
+      <p>This was created by taking a 3D model and placing 3D spheres over a corresponding panel. </p>
+      <h5>SOURCES</h5>
+      <p>A user on F-16.net submitted a F-16 exterior panel and door layout diagram. Submitted by "VPRFIXER" on January 28th, 2009 in a discussion post. <a href="https://www.f-16.net/forum/viewtopic.php?t=11758">SOURCE HERE</a></p>
+      <p>The F-16 3D model was created by "bohmerang" on sketchfab.com (a german artist who releases his art for free, created on "blender"). The panels on the model are consistant with the panels found on the chart. <a href="https://sketchfab.com/3d-models/f-16-fighting-falcon-fighter-jet-free-f0b00989e5634764848ef2c235c64db5">SOURCE HERE</a></p>
+
+      <h4>TO Search</h4>
+      <p>Technical Order names are listed for reference purposes only. No official Technical Order content is included.</p>
+
+      <h4>Checklists</h4>
+      <p>This is not a replacement for TO's. Checklists are organizational aids and do not replace official inspection procedures. This is used to help confirm each step was accomplished. No tech data is included in these checklists</p>
+
+      <h4>Pre-filled out forms</h4>
+      <p>These forms are filled out IAW 00-20-1 shown below. This is an outdated source and approved for public release. JCNs are fake but still follow the correct date format.</p>
+      <a href="https://www.tinker.af.mil/Portals/106/Documents/Technical%20Orders/00-20-1.pdf">SOURCE HERE</a>
+
+      <h4>Torque converter</h4>
+      <p>This does not change the torque applied to the fastener. When using an inline extension, torque wrench settings must be corrected to avoid over or under tightening of a fastener using standard torque compensation formulas. Always verify torque procedures with applicable Technical Orders. The formula and explantion are below.</p>
+      <p>The torque equation is as follows:</p>
+      <strong>
+        T<sub>applied</sub> = T<sub>setting</sub> × ( (L + E × cos(A)) / L )
+      </strong>
+      <p>
+        Where:<br>
+        T<sub>setting</sub> = Setting on torque wrench<br>
+        T<sub>applied</sub> = Desired torque at fastener<br>
+        L = Length of torque wrench (center of handle to drive)<br>
+        E = Length of extension (center of drive to fastener)<br>
+        A = Angle of extension (0deg being directly outward)
+        <br><br>
+        Units are irrelavent because this formula scales T<sub>applied</sub>
+      </p>
+    </div>
   </body>
 </html>
-

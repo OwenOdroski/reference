@@ -1,8 +1,8 @@
 // Get DB
-let register = true
+let register = false
 if ('serviceWorker' in navigator && register) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/ref/sw.js')
+    navigator.serviceWorker.register('/sw.js')
       .then(reg => {
         console.log('✅ Service Worker registered with scope:', reg.scope);
       })
@@ -17,7 +17,7 @@ let forms
 let ref
 let notes
 let checklists
-fetch('/ref/db.json')
+fetch('/db.json')
   .then(res => res.json())
   .then(data => {
     forms = data.forms
@@ -161,7 +161,7 @@ function startPanelScreen() {
     //   });
 
     const loader = new THREE.GLTFLoader();
-    loader.load('/ref/f16.glb', (gltf) => {
+    loader.load('/f16.glb', (gltf) => {
       mesh = gltf.scene
       scene.add(gltf.scene)
 
@@ -273,6 +273,17 @@ function closePanelScreen() {
 
 }
 
+function oilCons() {
+  let data = document.getElementById('fl-time')
+  let consumption = 1.5 * JSON.parse(data.value)
+  console.log(consumption)
+
+  document.getElementById('cuns-res').innerHTML = 'MAX CONSUMPTION: ~' + Math.floor(consumption * 10) / 10 + ' hpt(s)'
+}
+function openLegal() {
+  document.getElementById('legal').style.display = 'block'
+}
+
 function searchPanel() {
   let search = document.getElementById('searchPanel')
 
@@ -375,7 +386,7 @@ function openForms(name) {
   const img = new Image();
   const canvas = document.querySelector('#form-canvas')
   const ctx = canvas.getContext('2d')
-  img.src = '/ref/781a.png'; // Relative or absolute path
+  img.src = '/781a.png'; // Relative or absolute path
 
   let f = forms[name].job
 
@@ -554,5 +565,3 @@ window.setTimeout(function() {
     updateTorqueIn(deg)
   })
 }, 100)
-
-
