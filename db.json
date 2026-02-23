@@ -57,9 +57,17 @@
       "A017 - Color Coded 33C",
       "IFLT - Flight roster <br> On Equipment Supply <br> Screens Training <br> Off Equipment"
   ]},
-    {"name": "Forms Rules", "steps": ["X is the highest (non-flyable condition), <br>- When replacement is due or OPs checks. Flyable condition <br>/ when minor discrepancy exists. Still flyable condition <br> A main job cannot be signed off unless all WCE's have been signed off <br><br> A dash is higher than a diagonal. Since dashes are an unknown conditions and diagonals are a minor condition, the dash is higher because we dont know if its bad or not."]},
-    {"name": "IMDS usage", "steps": ["Pulling 781A <br> - 320 screen to suppress (Main jobs dont have a WCE, suppress that. If there is no WCE's then dont suppress it. Stop when K's are reached) <br> - 255 screen to print <br><br> - In the old A's, put end date and last page number, Check 'CF 781A', Sign Corrected By"]},
-    {"name": "Miscellaneous", "steps": ["Base Phone Number: (260) 478-3xxx"]}
+    {"name": "Forms", "steps": ["X is the highest (non-flyable condition), <br>- When replacement is due or OPs checks. Flyable condition <br>/ when minor discrepancy exists. Still flyable condition <br> A main job cannot be signed off unless all WCE's have been signed off <br><br> A dash is higher than a diagonal. Since dashes are an unknown conditions and diagonals are a minor condition, the dash is higher because we dont know if its bad or not."]},
+    {"name": "IMDS Usage", "steps": ["Print Margins: <strong>0.6</strong> left, <strong>0.4</strong> right, <strong>0.8</strong> top, <strong>0.8</strong> bottom", "Pulling 781A <br> - 320 screen to suppress (Main jobs dont have a WCE, suppress that. If there is no WCE's then dont suppress it. Stop when K's are reached) <br> - 255 screen to print <br><br> - In the old A's, put end date and last page number, Check 'CF 781A', Sign Corrected By", "Transfer A - K <br> - 54 screen <br> - Event ID (JCN) <br> - Defer Code (Reason awaiting action) <br> - Equipment ID"]},
+    {"name": "Miscellaneous", "steps": ["Base Phone Number: (260) 478-3xxx"]},
+    {"name": "TOs", "steps": [" '-4' - Illustrated Parts Breakdon (e.g. -4-32: Landing Gear)"]},
+    {"name": "Troubleshooting", "steps": ["Delta-P extends during launch <br> - Reset <br> - If it does not extend after reset: Good <br> - If it does not reset: Bad, shutdown", "<6 Fuel pump lights <br> - Remove door 3308 <br> - Unscrew black lense cap (ensure the bulb comes with it) <br> - Switch with a known working bulb <br> - If it still does not light up: shutdown <br> - If it does light up, note the bulb will need to be replaced, close 3308.", "BIT fail <br> - Cycle flight controls until B system hydro is above 55 degrees. <br> - If fails again, cycle until 70-75 degrees <br> - If it still fails, call for a red ball"]},
+    {"name": "Hydraulics", "steps": ["A system: <br> - LEFs <br> - Flight Controls <br> - Speed Brakes <br> - FFP <br><br>B System: <br> - Flight Controls <br> - LEFs <br> - Landing Gear <br> - Nose Wheel Steering <br> - Gun <br> - AR Door <br> - Brakes <br> - JFS", "When case drain filter is replaced, an engine run is required for a bleed and leak because it only has hydro in it when the pump is running"]},
+    {"name": "Electrical", "steps": []},
+    {"name": "Environmental", "steps": []},
+    {"name": "Avionics", "steps": []},
+    {"name": "Weapons", "steps": []},
+    {"name": "Fuel", "steps": [" - F-1: Directly behind the cockpit (bladder) <br> - F-2: In front of AR door <br> - Forward Reservoir: right side of AR door <br> - Aft reservoir: left of AR door <br> - A-1: Under dorsal fairing"]}
   ],
   "checklists": {
     "names": [{"obj_name": "flyer-ff", "name": "Flyer (First Flight)"}, {"obj_name": "flyer-pl", "name": "Flyer (Launch)"}, {"obj_name": "flyer-pr", "name": "Flyer (Recovery)"}, {"obj_name": "flyer-th", "name": "Flyer (Thru-Flight)"}, {"obj_name": "flyer-ed", "name": "Flyer (End of Day)"}, {"obj_name": "eor", "name": "End of Runway"}, {"obj_name": "job", "name": "Basic Job"}, {"obj_name": "towing", "name": "Towing"}],
