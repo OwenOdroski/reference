@@ -2,10 +2,7 @@
   <head>
     <title>Document</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0f1214">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/ref/manifest.json">
     <script src="/ref/three.js"></script>
     <script src="/ref/Orbit.js"></script>
     <script src="/ref/Loader.js"></script>
@@ -44,7 +41,7 @@
       <h2>WARNING</h2>
       <p>This is reference only and should not be used in place of TOs. Read <a onclick="openLegal()" style="text-decoration: underline">this</a> before use.</p>
     </div>
-
+    <div id="blur-back"></div>
     <!--Fuel Load Calc-->
     <div class="item">
       <h3>Fuel Load calculator</h3>
@@ -65,6 +62,14 @@
       </div>
     </div>
 
+    <!-- Upload document -->
+    <div class="item" id="file-upload">
+      <h2>Welcome!</h2>
+      <p>To ensure security, the file that includes all information must be uploaded separately.</p>
+      <input type="file" id="file" accept=".json">
+      <p>File is saved locally and not distributed</p>
+    </div>
+
     <!-- Oil Consumption limit calc -->
     <div class="item">
       <h3>Oil Consumption Calculator</h3>
@@ -80,7 +85,7 @@
     <!--Quick access TO Refrence-->
     <div class="item">
       <h3>TO Search</h3>
-      <input type="text" id="searchTO" onkeydown="searchTO()" placeholder="Job Search">
+      <input type="text" id="searchTO" onkeydown="searchTO()" placeholder="Search">
 
       <div id="to-search-res" class="searchBar">
 
@@ -165,6 +170,10 @@
       <p id="torqueRes"></p>
     </div>
 
+    <div class="item">
+      <button id="clearIndexed">Clear IndexedDB</button>
+    </div>
+
     <div id="legal">
       <button onclick="document.getElementById('legal').style.display='none'">✕</button>
       <h3>Legal disclaimers and sources of information</h3>
@@ -216,8 +225,3 @@
     </div>
   </body>
 </html>
-
-
-
-
-
