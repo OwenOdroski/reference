@@ -12,14 +12,133 @@ if ('serviceWorker' in navigator && register) {
   });
 }
 
+const DB_NAME = "AppDB";
+const STORE_NAME = "jsonStore";
+const DB_VERSION = 1;
+
 let allPanels
 let forms
 let ref
 let notes
 let checklists
-fetch('/ref/db.json')
-  .then(res => res.json())
-  .then(data => {
+
+function setupDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        // key is the string you pass (your "tag")
+        db.createObjectStore(STORE_NAME);
+      }
+    };
+
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+/**
+ * Save the entire JSON object under ONE tag.
+ * Example tag: "reference"
+ */
+function saveJSON(db, tag, jsonObject) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, "readwrite");
+    const store = tx.objectStore(STORE_NAME);
+
+    const req = store.put(jsonObject, tag);
+
+    req.onsuccess = () => resolve(true);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+/**
+ * Get the entire JSON object back from ONE tag.
+ * Returns null if not found.
+ */
+function getJSON(db, tag) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, "readonly");
+    const store = tx.objectStore(STORE_NAME);
+
+    const req = store.get(tag);
+
+    req.onsuccess = () => resolve(req.result ?? null);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+/**
+ * Optional: delete the stored JSON for that tag
+ */
+function deleteJSON(db, tag) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, "readwrite");
+    const store = tx.objectStore(STORE_NAME);
+
+    const req = store.delete(tag);
+
+    req.onsuccess = () => resolve(true);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function hasJSON(db, tag) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, "readonly");
+    const store = tx.objectStore(STORE_NAME);
+
+    const req = store.getKey(tag);
+
+    req.onsuccess = () => resolve(req.result !== undefined);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function checkJSON() {
+  let a = await setupDB()
+  let c = await hasJSON(a, 'json')
+
+  if(!c) {
+    document.getElementById('file-upload').style.display = 'block'
+    document.getElementById('blur-back').style.display = 'block'
+
+    let upload = document.getElementById('file')
+
+    upload.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();   // Read file as string
+        const json = JSON.parse(text);    // Convert to object blur-back
+
+        await saveJSON(a, "json", json);
+        document.getElementById('file-upload').style.display = 'none'
+        document.getElementById('blur-back').style.display = 'none'
+        loadPage(a)
+      } catch (err) {
+        console.error("Invalid JSON file:", err);
+      }
+    });
+  } else {
+    loadPage(a)
+  }
+}
+
+async function loadPage(db) {
+  let data = await getJSON(db, 'json')
+  let clear = document.getElementById('clearIndexed')
+
+  clear.addEventListener('mousedown', async function() {
+    await deleteJSON(db, 'json')
+    alert('IndexedDB cleared')
+  })
+
+  if(data != null) {
     forms = data.forms
     allPanels = data.panels
     ref = data.to
@@ -27,7 +146,7 @@ fetch('/ref/db.json')
     checklists = data.checklists
 
     let ch = document.getElementById('ch')
-    console.log(data)
+
     for(let curr of checklists.names) {
       let width = '45%'
 
@@ -44,8 +163,8 @@ fetch('/ref/db.json')
       ch.appendChild(button)
     }
     loadList()
-  });
-
+  }
+}
 
 let mode = "view" // Dev or view
 // Fuel Load calculator
@@ -66,6 +185,8 @@ window.onload = function() {
   const diff = date - start;
   const oneDay = 1000 * 60 * 60 * 24;
   julian.innerHTML = "Julian Date: " + Math.floor(diff / oneDay);
+
+  checkJSON()
 }
 
 function fuelQuan() {
@@ -158,7 +279,7 @@ function startPanelScreen() {
     group = new THREE.Group()
 
     const loader = new THREE.GLTFLoader();
-    loader.load('/ref/f16.glb', (gltf) => {
+    loader.load('/f16.glb', (gltf) => {
       mesh = gltf.scene
       scene.add(gltf.scene)
 
@@ -552,7 +673,6 @@ window.setTimeout(function() {
   updateTorqueIn(0)
 
   let select = document.getElementById('deg')
-  console.log(select)
 
   select.addEventListener('change', function() {
     let degA = [0, 45, 90, 135, 180, 225, 270, 315]
