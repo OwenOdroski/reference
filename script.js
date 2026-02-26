@@ -279,7 +279,7 @@ function startPanelScreen() {
     group = new THREE.Group()
 
     const loader = new THREE.GLTFLoader();
-    loader.load('/f16.glb', (gltf) => {
+    loader.load('/ref/f16.glb', (gltf) => {
       mesh = gltf.scene
       scene.add(gltf.scene)
 
