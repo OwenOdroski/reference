@@ -2,7 +2,7 @@
 let register = false
 if ('serviceWorker' in navigator && register) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/ref/sw.js')
+    navigator.serviceWorker.register('/sw.js')
       .then(reg => {
         console.log('✅ Service Worker registered with scope:', reg.scope);
       })
@@ -131,7 +131,7 @@ async function checkJSON() {
         } else {
           let json = dec.value
 
-          let d = new Date(content.value.meta.els)
+          let d = new Date(dec.value.meta.els)
           let td = new Date()
 
           if(d < td) {
@@ -331,7 +331,7 @@ function startPanelScreen() {
     group = new THREE.Group()
 
     const loader = new THREE.GLTFLoader();
-    loader.load('/ref/f16.glb', (gltf) => {
+    loader.load('/f16.glb', (gltf) => {
       mesh = gltf.scene
       scene.add(gltf.scene)
 
@@ -602,7 +602,7 @@ function openForms(name) {
   const img = new Image();
   const canvas = document.querySelector('#form-canvas')
   const ctx = canvas.getContext('2d')
-  img.src = '/ref/781a.png'; // Relative or absolute path
+  img.src = '/781a.png'; // Relative or absolute path
 
   let f = forms[name].job
 
@@ -850,4 +850,3 @@ function base64ToBytes(base64) {
   }
   return bytes;
 }
-
