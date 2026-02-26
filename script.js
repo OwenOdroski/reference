@@ -2,7 +2,7 @@
 let register = false
 if ('serviceWorker' in navigator && register) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/ref/sw.js')
+    navigator.serviceWorker.register('/sw.js')
       .then(reg => {
         console.log('✅ Service Worker registered with scope:', reg.scope);
       })
@@ -21,6 +21,8 @@ let forms
 let ref
 let notes
 let checklists
+let wuc
+let decryptKey
 
 function setupDB() {
   return new Promise((resolve, reject) => {
@@ -107,30 +109,78 @@ async function checkJSON() {
     document.getElementById('blur-back').style.display = 'block'
 
     let upload = document.getElementById('file')
+    let button = document.getElementById('upload-enc')
 
-    upload.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
+    button.addEventListener("mousedown", async (e) => {
+      const file = upload.files[0];
       if (!file) return;
 
       try {
+        const key = document.getElementById('key')
         const text = await file.text();   // Read file as string
-        const json = JSON.parse(text);    // Convert to object blur-back
+        const dec = await decryptAES(text, key.value)
 
-        await saveJSON(a, "json", json);
-        document.getElementById('file-upload').style.display = 'none'
-        document.getElementById('blur-back').style.display = 'none'
-        loadPage(a)
-      } catch (err) {
-        console.error("Invalid JSON file:", err);
-      }
+        decryptKey = key.value
+
+        if (!dec.ok) {
+          if (dec.reason === "decrypt_failed") {
+            alert("Wrong password OR file corrupted/tampered.");
+          } else {
+            alert("Bad file format.");
+          }
+        } else {
+          let json = dec.value
+
+          let d = new Date(content.value.meta.els)
+          let td = new Date()
+
+          if(d < td) {
+            alert("Encrypted file has expired")
+            return
+          }
+
+          await saveJSON(a, "json", text);
+          document.getElementById('file-upload').style.display = 'none'
+          document.getElementById('blur-back').style.display = 'none'
+          loadPage(a)
+          }
+        } catch (err) {
+          console.error("Invalid JSON file:", err);
+        }
+
     });
   } else {
-    loadPage(a)
+    async function l(reason = '') {
+      let key = prompt(reason + "Key: ")
+      let cn = await getJSON(a, 'json')
+      decryptKey = key
+      let content = await decryptAES(cn, key)
+      let d = new Date(content.value.meta.els)
+      let td = new Date()
+
+      if(d < td) {
+        alert("Encrypted file has expired")
+        deleteJSON(a, 'json')
+        return
+      }
+
+      if(!content.ok) {
+        window.setTimeout(() => {
+          l('Decryption Failed - ')
+        }, 1000)
+        return
+      } else {
+        loadPage(a)
+      }
+    }
+    l()
   }
 }
 
 async function loadPage(db) {
-  let data = await getJSON(db, 'json')
+  let d = await getJSON(db, 'json')
+  let d2 = await decryptAES(d, decryptKey)
+  let data = d2.value
   let clear = document.getElementById('clearIndexed')
 
   clear.addEventListener('mousedown', async function() {
@@ -144,6 +194,7 @@ async function loadPage(db) {
     ref = data.to
     notes = data.notes
     checklists = data.checklists
+    wuc = data.WUC
 
     let ch = document.getElementById('ch')
 
@@ -159,10 +210,11 @@ async function loadPage(db) {
       let button = document.createElement('button')
       button.setAttribute('onclick', `openChecklist("${curr.obj_name}")`)
       button.style.width = width
-      button.innerHTML = curr.name
+      button.textContent = curr.name
       ch.appendChild(button)
     }
     loadList()
+    searchWUC()
   }
 }
 
@@ -184,7 +236,7 @@ window.onload = function() {
   const start = new Date(date.getFullYear(), 0, 0);
   const diff = date - start;
   const oneDay = 1000 * 60 * 60 * 24;
-  julian.innerHTML = "Julian Date: " + Math.floor(diff / oneDay);
+  julian.textContent = "Julian Date: " + Math.floor(diff / oneDay);
 
   checkJSON()
 }
@@ -201,7 +253,7 @@ function fuelQuan() {
     fullWeight = fullWeight - 1250
   }
 
-  result.innerHTML = '~<strong>' + Math.floor(((fullWeight - JSON.parse(total.value)) / 6.8) * 100) / 100 + '</strong>G (JP-8) <br><br> ~<strong>' + Math.floor(((fullWeight - JSON.parse(total.value)) / 6.4) * 100) / 100 + '</strong>G (JP-4)'
+  result.textContent = '~<strong>' + Math.floor(((fullWeight - JSON.parse(total.value)) / 6.8) * 100) / 100 + '</strong>G (JP-8) <br><br> ~<strong>' + Math.floor(((fullWeight - JSON.parse(total.value)) / 6.4) * 100) / 100 + '</strong>G (JP-4)'
   result.style = "font-size: 20px"
 }
 
@@ -215,7 +267,7 @@ function loadList() { // Load refrences
   for(let i in ref) {
     let li = document.createElement('div')
 
-    li.innerHTML = ref[i].name.toUpperCase()
+    li.textContent = ref[i].name.toUpperCase()
     li.onclick = function() {
       if(ref[i].MIDAS != '') {
         alert('TO: ' + ref[i].TO + '    MIDAS: ' + ref[i].MIDAS)
@@ -279,7 +331,7 @@ function startPanelScreen() {
     group = new THREE.Group()
 
     const loader = new THREE.GLTFLoader();
-    loader.load('/ref/f16.glb', (gltf) => {
+    loader.load('/f16.glb', (gltf) => {
       mesh = gltf.scene
       scene.add(gltf.scene)
 
@@ -293,9 +345,9 @@ function startPanelScreen() {
     }, (xhr) => {
       let percent = (xhr.loaded / xhr.total * 100)
       percent = Infinity
-      s.innerHTML = percent + '% loaded'
-      if(s.innerHTML == 'Infinity% loaded') {
-        s.innerHTML = '100% loaded'
+      s.textContent = percent + '% loaded'
+      if(s.textContent == 'Infinity% loaded') {
+        s.textContent = '100% loaded'
       }
     },
     (error) => {
@@ -394,7 +446,7 @@ function oilCons() {
   let consumption = 1.5 * JSON.parse(data.value)
   console.log(consumption)
 
-  document.getElementById('cuns-res').innerHTML = 'MAX CONSUMPTION: ~' + Math.floor(consumption * 10) / 10 + ' hpt(s)'
+  document.getElementById('cuns-res').textContent = 'MAX CONSUMPTION: ~' + Math.floor(consumption * 10) / 10 + ' hpt(s)'
 }
 function openLegal() {
   document.getElementById('legal').style.display = 'block'
@@ -430,6 +482,48 @@ function searchPanel() {
   alert('Could not find Panel')
 }
 
+function searchWUC() {
+  const input = document.getElementById("searchWUC").value.toLowerCase();
+  const resultsDiv = document.getElementById("wuc-search-res");
+  resultsDiv.innerHTML = ''
+  let html = "";
+  let count = 0;
+  const MAX_RESULTS = 75; // prevents DOM overload
+
+  for (let i = 0; i < wuc.length; i++) {
+    const item = wuc[i];
+
+    // Search across all fields
+    if (
+      item.code.toLowerCase().includes(input) ||
+      item.desc.toLowerCase().includes(input) ||
+      item.system.toLowerCase().includes(input)
+    ) {
+      const div = document.createElement("div");
+
+      const strong = document.createElement("strong");
+      strong.textContent = item.code;
+
+      const text = document.createTextNode(" — " + item.desc);
+      const section = document.createTextNode(item.system)
+      //section.textContent = item.system
+
+      div.appendChild(strong);
+      div.appendChild(text);
+      div.appendChild(document.createElement('br'))
+      div.appendChild(section)
+      div.appendChild(document.createElement('br'))
+      div.appendChild(document.createElement('br'))
+
+      resultsDiv.appendChild(div);
+      count++;
+      if (count >= MAX_RESULTS) break;
+    }
+  }
+
+  //resultsDiv.innerHTML = html;
+}
+
 var animation
 function animate() {
   animation = requestAnimationFrame(animate);
@@ -449,24 +543,30 @@ function openChecklist(type) {
 
   let checklist = checklists[type]
 
-  div.innerHTML = ""
+  div.textContent = ""
 
   let res = checklists.names.find(obj => obj.obj_name === type)
 
-  name.innerHTML = res.name
+  name.textContent = res.name
 
   for(let i in checklist) {
     let button = document.createElement('div')
 
-    button.onclick = function() {
-      button.style.background = '#FFFFFF'
-    }
-    button.innerHTML = `
-    <label class="option">
-      <input type="checkbox" class="cb">
-      <span>${checklist[i]}</span>
-    </label>
-    `
+    let label = document.createElement('label')
+    label.setAttribute('class', 'option')
+
+    let input = document.createElement('input')
+    input.setAttribute('type', 'checkbox')
+    input.setAttribute('class', 'cb')
+
+    let span = document.createElement('span')
+    span.textContent = checklist[i]
+
+    label.appendChild(input)
+    label.appendChild(span)
+
+    button.appendChild(label)
+
     button.style="background-color: transparent; width: 100%; height 55px; font-size: 20px; margin: 0px"
 
     div.appendChild(button)
@@ -502,7 +602,7 @@ function openForms(name) {
   const img = new Image();
   const canvas = document.querySelector('#form-canvas')
   const ctx = canvas.getContext('2d')
-  img.src = '/ref/781a.png'; // Relative or absolute path
+  img.src = '/781a.png'; // Relative or absolute path
 
   let f = forms[name].job
 
@@ -568,20 +668,20 @@ function openIMDS() {
 
   let buttons = document.getElementById('imds-buttons')
 
-  buttons.innerHTML = ''
+  buttons.textContent = ''
 
   for(let i in notes) {
     let button = document.createElement('button')
 
-    button.innerHTML = notes[i].name
+    button.textContent = notes[i].name
     button.onclick = function() {
       let results = document.getElementById('imds-results')
-      results.innerHTML = ''
+      results.textContent = ''
 
       for(let u in notes[i].steps) {
         let p = document.createElement('p')
 
-        p.innerHTML = notes[i].steps[u]
+        p.textContent = notes[i].steps[u]
 
         results.appendChild(p)
       }
@@ -604,7 +704,7 @@ function torqueSubmit() {
   let degA = [0, 45, 90, 135, 180, 225, 270, 315]
   let deg = degA[JSON.parse(degS.value)]
 
-  document.getElementById('torqueRes').innerHTML = Math.round(newTorque(JSON.parse(originTorque.value), deg, JSON.parse(exLength.value), JSON.parse(twLength.value)))
+  document.getElementById('torqueRes').textContent = Math.round(newTorque(JSON.parse(originTorque.value), deg, JSON.parse(exLength.value), JSON.parse(twLength.value)))
 }
 
 function updateTorqueIn(deg) {
@@ -680,3 +780,73 @@ window.setTimeout(function() {
     updateTorqueIn(deg)
   })
 }, 100)
+
+
+// ----- SECURITY ------
+async function decryptAES(base64Data, password) {
+  const enc = new TextEncoder();
+  const dec = new TextDecoder();
+
+  try {
+    const combined = base64ToBytes(base64Data);
+
+    // Basic sanity checks (helps catch wrong file / truncated data)
+    if (combined.length < 16 + 12 + 1) {
+      return { ok: false, reason: "bad_format", error: "Too short" };
+    }
+
+    const salt = combined.slice(0, 16);
+    const iv = combined.slice(16, 28);
+    const ciphertext = combined.slice(28);
+
+    const keyMaterial = await crypto.subtle.importKey(
+      "raw",
+      enc.encode(password),
+      "PBKDF2",
+      false,
+      ["deriveKey"]
+    );
+
+    const key = await crypto.subtle.deriveKey(
+      { name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" },
+      keyMaterial,
+      { name: "AES-GCM", length: 256 },
+      false,
+      ["decrypt"]
+    );
+
+    // If password wrong OR data tampered/corrupted -> this throws
+    const decryptedBuf = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv },
+      key,
+      ciphertext
+    );
+
+    const text = dec.decode(decryptedBuf);
+
+    // If you expect JSON, parse it; JSON parse failure is NOT a crypto failure
+    try {
+      return { ok: true, value: JSON.parse(text) };
+    } catch {
+      return { ok: true, value: text, warning: "not_json" };
+    }
+  } catch (err) {
+    // AES-GCM failures (wrong password / tamper / corrupt) land here
+    // In most browsers it's DOMException: OperationError
+    return {
+      ok: false,
+      reason: "decrypt_failed",
+      errorName: err?.name || "Error",
+      errorMessage: err?.message || String(err)
+    };
+  }
+}
+
+function base64ToBytes(base64) {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return bytes;
+}

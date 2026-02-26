@@ -2,12 +2,12 @@
   <head>
     <title>Document</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
-    <link rel="manifest" href="/ref/manifest.json">
-    <script src="/ref/three.js"></script>
-    <script src="/ref/Orbit.js"></script>
-    <script src="/ref/Loader.js"></script>
-    <script src="/ref/script.js"></script>
-    <link rel="stylesheet" href="/ref/style.css">
+    <link rel="manifest" href="manifest.json">
+    <script src="/three.js"></script>
+    <script src="/Orbit.js"></script>
+    <script src="/Loader.js"></script>
+    <script src="/script.js"></script>
+    <link rel="stylesheet" href="/style.css">
   </head>
   <body>
     <!--
@@ -66,7 +66,9 @@
     <div class="item" id="file-upload">
       <h2>Welcome!</h2>
       <p>To ensure security, the file that includes all information must be uploaded separately.</p>
-      <input type="file" id="file" accept=".json">
+      <p>Decryption Key: <input type="text" placeholder="Key" id="key"></p>
+      <input type="file" id="file" accept=".enc">
+      <button id="upload-enc">Upload</button>
       <p>File is saved locally and not distributed</p>
     </div>
 
@@ -84,12 +86,17 @@
 
     <!--Quick access TO Refrence-->
     <div class="item">
-      <h3>TO Search</h3>
+      <h3>TO Lookup</h3>
       <input type="text" id="searchTO" onkeydown="searchTO()" placeholder="Search">
 
-      <div id="to-search-res" class="searchBar">
+      <div id="to-search-res" class="searchBar"></div>
+    </div>
 
-      </div>
+    <div class="item">
+      <h3>WUC Lookup</h3>
+      <input type="text" id="searchWUC" onkeydown="searchWUC()" placeholder="Search">
+
+      <div id="wuc-search-res" class="searchBar"></div>
     </div>
 
     <!--Panel Lookup-->
@@ -141,8 +148,8 @@
 
     <div id="H-content">
       <button onclick="document.getElementById('H-content').style.display = 'none'">X<button>
-      <img src="/ref/781H-images-0.jpg" class="h781">
-      <img src="/ref/781H-images-1.jpg" class="h781">
+      <img src="/781H-images-0.jpg" class="h781">
+      <img src="/781H-images-1.jpg" class="h781">
     </div>
     <div id="forms">
       <canvas id="form-canvas" onclick="document.getElementById('forms').style.display = 'none'"></canvas>
@@ -176,10 +183,17 @@
 
     <div id="legal">
       <button onclick="document.getElementById('legal').style.display='none'">✕</button>
-      <h3>Legal disclaimers and sources of information</h3>
+      <h3>Legal disclaimers, sources of information, and security</h3>
       <p>All information in this tool is derived from public sources. The sources are listed below. The information included may be incorrect because it is either from released tech data from F-16A/B variants, outdated TOs approved for public release, or public sources with little to no credibility.</p>
       <p>All data in this tool is stored in a single JSON file. Format is under JavaScript object syntax and is unencrypted.</p>
-      <p>There is no DoD instruction, DAFI, or AFI that prohibits note-taking. This is note-taking, with ease-of-use tools and better navigation.<p>
+      <p>There is no DoD instruction, DAFI, or AFI that prohibits note-taking. This is note-taking, with ease-of-use tools and better navigation. That being said, this information is not easily accessible.<p>
+
+      <h4>SECURITY</h4>
+      <p>This system uses a built in API called Web Crypto AES (Advanced Encryption Standard). It is considered secure but technically not required for use of this platform. This program does not connect to the internet, or have any access to the internet. It relys on the phone security. The reason Web Crypto API is used is for potential controlled distribution of this contents of this program.</p>
+      <p>The data in the file contains all of the information (listed below), except for fuel load calculator, oil consumption calculator, and torque converter.</p>
+      <p>The encrypted file is embedded with user identifiable information. The creator of the encrypted file is responsible for this information being accurate. This is used in case of distribution of the encrypted file, the person responsible can be held accountable.</p>
+      <p>No data is ever stored as readable information. JSON (JavaScript Object Notation) is what is saved behind the encrypted file. The data is saved between uses using IndexedDB. This is open and readable in a normal website but in this case it's an encrypted string. The decryption key is only saved as a local variable and gets wiped every time the app closes.</p>
+      <p>Embedded within the file is identifiable information that, if released, can identify who released it. Also an expiration date that renders the file useless after a set date (like when a contract ends)</p>
 
       <h4>Fuel Load Calculator</h4>
       <p>Information for this has been widely known by the public for years. Sources are still listed below. The sources state the full fuel capacity of the F-16C/D </p>
@@ -198,6 +212,10 @@
 
       <h4>TO Search</h4>
       <p>Technical Order names are listed for reference purposes only. No official Technical Order content is included.</p>
+
+      <h4>WUC search</h4>
+      <p>Work Unit Codes are sourced from a PDF of 1F-16C-06 below. This is an -06 manual from the F-16C/D Block 30. Information may be outdated.</p>
+      <a href="https://pdfcoffee.com/1f-16c-06-work-unit-code-manual-pdf-free.html">SOURCE HERE</a>
 
       <h4>Checklists</h4>
       <p>This is not a replacement for TO's. Checklists are organizational aids and do not replace official inspection procedures. This is used to help confirm that each step was accomplished. No tech data is included in these checklists</p>
