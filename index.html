@@ -2,7 +2,7 @@
   <head>
     <title>Document</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/ref/manifest.json">
     <script src="/ref/three.js"></script>
     <script src="/ref/Orbit.js"></script>
     <script src="/ref/Loader.js"></script>
@@ -10,36 +10,10 @@
     <link rel="stylesheet" href="/ref/style.css">
   </head>
   <body>
-    <!--
-    To update page:
-      surge . skinny-dippiing.surge.sh
-
-      Screen Layout:
-
-      Fuel calculator (in element)
-      Quick access TO refrences (in element)
-      Checklists/Reminders
-        Flyer Checklist
-        Reminders, meaning when doing this task dont forget to do this
-      Panel layout/search button
-      Cockpit switch layout/search button
-      List of nonstandard abbreviations
-      00-21-1 data with pre filled out forms button
-
-      Required updates
-        > Fix buttons - wrong sizes COMPLETED
-        > Missing panels on PANEL CHART
-        > Checklists look stupid on mobile COMPLETED
-        > Need more checklists (Doing Mx) COMPLETED
-        > Mesh change color upon search on panel Lookup    COMPLETED
-        > Make the prefilled out forms (removing panels, changing wheels, LOX servicing) COMPLETED (add more)
-
-    -->
-
     <!--Usage Warning-->
     <div class="item">
       <h2>WARNING</h2>
-      <p>This is reference only and should not be used in place of TOs. Read <a onclick="openLegal()" style="text-decoration: underline">this</a> before use.</p>
+      <p>This is a reference only and should not be used in place of TOs. Read <a onclick="openLegal()" style="text-decoration: underline">this</a> before use.</p>
     </div>
     <div id="blur-back"></div>
     <!--Fuel Load Calc-->
@@ -64,12 +38,19 @@
 
     <!-- Upload document -->
     <div class="item" id="file-upload">
-      <h2>Welcome!</h2>
-      <p>To ensure security, the file that includes all information must be uploaded separately.</p>
-      <p>Decryption Key: <input type="text" placeholder="Key" id="key"></p>
+      <h2 style="margin-left: 16px; margin-top: 12px">Welcome!</h2>
+      <p style="margin-left: 16px">Decryption key</p>
+      <input type="password" placeholder="Key" id="key" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false">
       <input type="file" id="file" accept=".enc">
       <button id="upload-enc">Upload</button>
-      <p>File is saved locally and not distributed</p>
+      <p style="margin-left: 16px; font-size: 12px">File is saved locally and not distributed</p>
+    </div>
+
+    <div class="item" id="file-pass">
+      <p style="margin-left: 16px">Decryption key</p>
+      <input type="password" placeholder="Key" id="key-preload" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <p id="pass-error"></p>
+      <button id="file-pass-button">Upload</button>
     </div>
 
     <!-- Oil Consumption limit calc -->
@@ -243,4 +224,3 @@
     </div>
   </body>
 </html>
-
