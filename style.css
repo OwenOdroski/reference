@@ -113,6 +113,15 @@ a:hover {
   display: none;
   z-index: 100
 }
+#file-pass {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 70%;
+  transform: translate(-50%, -50%);
+  display: none;
+  z-index: 100
+}
 #file {
   width: calc(100% - 24px)
 }
