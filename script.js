@@ -2,7 +2,7 @@
 let register = false
 if ('serviceWorker' in navigator && register) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('/ref/sw.js')
       .then(reg => {
         console.log('✅ Service Worker registered with scope:', reg.scope);
       })
@@ -150,30 +150,37 @@ async function checkJSON() {
 
     });
   } else {
+    document.getElementById('file-pass').style.display = 'block'
+    document.getElementById('blur-back').style.display = 'block'
     async function l(reason = '') {
-      let key = prompt(reason + "Key: ")
+      let key = document.getElementById('key-preload')
       let cn = await getJSON(a, 'json')
-      decryptKey = key
-      let content = await decryptAES(cn, key)
+      decryptKey = key.value
+      let content = await decryptAES(cn, key.value)
       let d = new Date(content.value.meta.els)
       let td = new Date()
+      let doc = document.getElementById('pass-error')
 
       if(d < td) {
-        alert("Encrypted file has expired")
+        doc.innerHTML = "Encrypted file has expired"
         deleteJSON(a, 'json')
+        window.location.reload()
         return
       }
 
       if(!content.ok) {
-        window.setTimeout(() => {
-          l('Decryption Failed - ')
-        }, 1000)
+        doc.innerHTML = "Error decrypting file"
         return
       } else {
+        document.getElementById('file-pass').style.display = 'none'
+        document.getElementById('blur-back').style.display = 'none'
         loadPage(a)
       }
     }
-    l()
+    document.getElementById('file-pass-button').onclick = () => {
+      l()
+    }
+
   }
 }
 
@@ -186,6 +193,7 @@ async function loadPage(db) {
   clear.addEventListener('mousedown', async function() {
     await deleteJSON(db, 'json')
     alert('IndexedDB cleared')
+    window.location.reload()
   })
 
   if(data != null) {
@@ -201,7 +209,7 @@ async function loadPage(db) {
     for(let curr of checklists.names) {
       let width = '45%'
 
-      if(window.innerWidth < 430) {
+      if(window.innerWidth < 450) {
         width = '100%'
       } else if(window.innerWidth > 950) {
         width = '23%'
@@ -331,7 +339,7 @@ function startPanelScreen() {
     group = new THREE.Group()
 
     const loader = new THREE.GLTFLoader();
-    loader.load('/f16.glb', (gltf) => {
+    loader.load('/ref/f16.glb', (gltf) => {
       mesh = gltf.scene
       scene.add(gltf.scene)
 
@@ -505,8 +513,9 @@ function searchWUC() {
       strong.textContent = item.code;
 
       const text = document.createTextNode(" — " + item.desc);
-      const section = document.createTextNode(item.system)
-      //section.textContent = item.system
+      const section = document.createElement("em")
+      section.textContent = item.system
+      section.style = "font-size: 12px"
 
       div.appendChild(strong);
       div.appendChild(text);
@@ -520,8 +529,6 @@ function searchWUC() {
       if (count >= MAX_RESULTS) break;
     }
   }
-
-  //resultsDiv.innerHTML = html;
 }
 
 var animation
@@ -602,7 +609,7 @@ function openForms(name) {
   const img = new Image();
   const canvas = document.querySelector('#form-canvas')
   const ctx = canvas.getContext('2d')
-  img.src = '/781a.png'; // Relative or absolute path
+  img.src = '/ref/781a.png'; // Relative or absolute path
 
   let f = forms[name].job
 
