@@ -1,6 +1,6 @@
 // Get DB
 let register = false
-let root = ''
+let root = '/ref'
 if ('serviceWorker' in navigator && register) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register(root + '/sw.js')
@@ -884,3 +884,4 @@ function base64ToBytes(base64) {
   }
   return bytes;
 }
+
