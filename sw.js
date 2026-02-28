@@ -1,4 +1,5 @@
 const version = "v0.1"
+const root = ''
 if (!self.define) {
     let e, s = {};
     const i = (i, n) => (i = new URL(i + ".js",n).href,
@@ -44,45 +45,42 @@ define(["./workbox"], function(e) {
     }
     ),
     e.precacheAndRoute([{
-        url: "/index.html",
+        url: root + "/index.html",
         revision: version
     }, {
-        url: "/Loader.js",
+        url: root + "/Loader.js",
         revision: version
     }, {
-        url: "/781a.png",
+        url: root + "/781a.png",
         revision: version
     }, {
-        url: "/781H-images-0.jpg",
+        url: root + "/781H-images-0.jpg",
         revision: version
     }, {
-        url: "/781H-images-1.jpg",
+        url: root + "/781H-images-1.jpg",
         revision: version
     }, {
-        url: "/f16.glb",
+        url: root + "/f16.glb",
         revision: version
     }, {
-        url: "/script.js",
+        url: root + "/script.js",
         revision: version
     }, {
-        url: "/style.css",
+        url: root + "/style.css",
         revision: version
     }, {
-        url: "/three.js",
+        url: root + "/three.js",
+        revision: version
+    },{
+        url: root + "/icon.jpg",
         revision: version
     }, {
-        url: "/db.json",
+        url: root + "/Orbit.js",
         revision: version
     }, {
-        url: "/icon.jpg",
-        revision: version
-    }, {
-        url: "/Orbit.js",
-        revision: version
-    }, {
-        url: "/manifest.json",
+        url: root + "/manifest.json",
         revision: version
     }], {}),
     e.cleanupOutdatedCaches(),
-    e.registerRoute(new e.NavigationRoute(e.createHandlerBoundToURL("index.html")))
+    e.registerRoute(new e.NavigationRoute(e.createHandlerBoundToURL(root + "/index.html")))
 });

@@ -2,18 +2,44 @@
   <head>
     <title>Document</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
-    <link rel="manifest" href="/ref/manifest.json">
-    <script src="/ref/three.js"></script>
-    <script src="/ref/Orbit.js"></script>
-    <script src="/ref/Loader.js"></script>
-    <script src="/ref/script.js"></script>
-    <link rel="stylesheet" href="/ref/style.css">
+    <link rel="manifest" href="manifest.json">
+    <script src="/three.js"></script>
+    <script src="/Orbit.js"></script>
+    <script src="/Loader.js"></script>
+    <script src="/script.js"></script>
+    <link rel="stylesheet" href="/style.css">
   </head>
   <body>
+    <!--
+    To update page:
+      surge . skinny-dippiing.surge.sh
+
+      Screen Layout:
+
+      Fuel calculator (in element)
+      Quick access TO refrences (in element)
+      Checklists/Reminders
+        Flyer Checklist
+        Reminders, meaning when doing this task dont forget to do this
+      Panel layout/search button
+      Cockpit switch layout/search button
+      List of nonstandard abbreviations
+      00-21-1 data with pre filled out forms button
+
+      Required updates
+        > Fix buttons - wrong sizes COMPLETED
+        > Missing panels on PANEL CHART
+        > Checklists look stupid on mobile COMPLETED
+        > Need more checklists (Doing Mx) COMPLETED
+        > Mesh change color upon search on panel Lookup    COMPLETED
+        > Make the prefilled out forms (removing panels, changing wheels, LOX servicing) COMPLETED (add more)
+
+    -->
+
     <!--Usage Warning-->
     <div class="item">
       <h2>WARNING</h2>
-      <p>This is a reference only and should not be used in place of TOs. Read <a onclick="openLegal()" style="text-decoration: underline">this</a> before use.</p>
+      <p>This is reference only and should not be used in place of TOs. Read <a onclick="openLegal()" style="text-decoration: underline">this</a> before use.</p>
     </div>
     <div id="blur-back"></div>
     <!--Fuel Load Calc-->
@@ -39,16 +65,27 @@
     <!-- Upload document -->
     <div class="item" id="file-upload">
       <h2 style="margin-left: 16px; margin-top: 12px">Welcome!</h2>
+      <form>
+      <p style="margin-left: 16px">Username</p>
+      <input type="text" name="username" placeholder="Username" id="user" autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false">
+
       <p style="margin-left: 16px">Decryption key</p>
-      <input type="password" placeholder="Key" id="key" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <input type="password" name="password" placeholder="Key" id="key" autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false">
+      </form>
+      <p style="margin-left: 16px">Encrypted Data File (.enc)</p>
       <input type="file" id="file" accept=".enc">
       <button id="upload-enc">Upload</button>
       <p style="margin-left: 16px; font-size: 12px">File is saved locally and not distributed</p>
     </div>
 
+    <!--Confirm password-->
     <div class="item" id="file-pass">
-      <p style="margin-left: 16px">Decryption key</p>
-      <input type="password" placeholder="Key" id="key-preload" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <form>
+        <p style="margin-left: 16px">Username</p>
+        <input type="text" name="username" placeholder="Username" id="user-preload" autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <p style="margin-left: 16px">Decryption key</p>
+        <input type="password" name="password" placeholder="Key" id="key-preload" autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false">
+      </form>
       <p id="pass-error"></p>
       <button id="file-pass-button">Upload</button>
       <button onclick="document.getElementById('file-pass').style.display='none';document.getElementById('blur-back').style.display='none'">Proceed without data</button>
@@ -66,7 +103,7 @@
       <h3 id="julian"></h3>
     </div>
 
-    <!--Quick access TO Refrence-->
+    <!--Quick access TO Reference-->
     <div class="item">
       <h3>TO Lookup</h3>
       <input type="text" id="searchTO" onkeydown="searchTO()" placeholder="Search">
@@ -76,9 +113,16 @@
 
     <div class="item">
       <h3>WUC Lookup</h3>
-      <input type="text" id="searchWUC" onkeydown="searchWUC()" placeholder="Search">
+      <input type="text" id="searchWUC" onkeydown="searchWUC()" onkeyup="searchWUC()" placeholder="Search">
 
       <div id="wuc-search-res" class="searchBar"></div>
+    </div>
+
+    <div class="item">
+      <h3>Reference Designator Search</h3>
+      <input type="text" id="searchRefDes" onkeydown="searchRefDes()" onkeyup="searchRefDes()" placeholder="Work Unit Code">
+
+      <div id="res-search-res" class="searchBar"></div>
     </div>
 
     <!--Panel Lookup-->
@@ -89,6 +133,7 @@
       <!--<button onclick="alert('Adding next update')" style="width: 130px">Cockpit layout</button>-->
     </div>
 
+    <!-- Panel 3D wrapper -->
     <div id="panel-3d">
       <div id="loader-wrapper">
         <p id="loader-status">0% Loaded</p>
@@ -130,8 +175,8 @@
 
     <div id="H-content">
       <button onclick="document.getElementById('H-content').style.display = 'none'">X<button>
-      <img src="/ref/781H-images-0.jpg" class="h781">
-      <img src="/ref/781H-images-1.jpg" class="h781">
+      <img src="/781H-images-0.jpg" class="h781">
+      <img src="/781H-images-1.jpg" class="h781">
     </div>
     <div id="forms">
       <canvas id="form-canvas" onclick="document.getElementById('forms').style.display = 'none'"></canvas>
@@ -196,8 +241,11 @@
       <p>Technical Order names are listed for reference purposes only. No official Technical Order content is included.</p>
 
       <h4>WUC search</h4>
-      <p>Work Unit Codes are sourced from a PDF of 1F-16C-06 below. This is an -06 manual from the F-16C/D Block 30. Information may be outdated.</p>
+      <p>Work Unit Codes are sourced from a PDF of 1F-16C-06 below. This is an -06 manual from the F-16C/D Block 30. Information may be outdated. Source states "Distribution Statement E". Source not approved for release. For this app, contents are encrypted and inaccessible without the user passkey. </p>
       <a href="https://pdfcoffee.com/1f-16c-06-work-unit-code-manual-pdf-free.html">SOURCE HERE</a>
+
+      <h4>Reference Designator Search</h4>
+      <p>Reference designators are sourced from the same file as WUC search (-06 manual)</p>
 
       <h4>Checklists</h4>
       <p>This is not a replacement for TO's. Checklists are organizational aids and do not replace official inspection procedures. This is used to help confirm that each step was accomplished. No tech data is included in these checklists</p>
@@ -225,4 +273,3 @@
     </div>
   </body>
 </html>
-

@@ -1,8 +1,9 @@
 // Get DB
 let register = false
+let root = ''
 if ('serviceWorker' in navigator && register) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/ref/sw.js')
+    navigator.serviceWorker.register(root + '/sw.js')
       .then(reg => {
         console.log('✅ Service Worker registered with scope:', reg.scope);
       })
@@ -23,6 +24,7 @@ let notes
 let checklists
 let wuc
 let decryptKey
+let refDes
 
 function setupDB() {
   return new Promise((resolve, reject) => {
@@ -103,6 +105,13 @@ function hasJSON(db, tag) {
 async function checkJSON() {
   let a = await setupDB()
   let c = await hasJSON(a, 'json')
+  let clear = document.getElementById('clearIndexed')
+
+  clear.addEventListener('mousedown', async function() {
+    await deleteJSON(a, 'json')
+    alert('IndexedDB cleared')
+    window.location.reload()
+  })
 
   if(!c) {
     document.getElementById('file-upload').style.display = 'block'
@@ -117,10 +126,11 @@ async function checkJSON() {
 
       try {
         const key = document.getElementById('key')
+        const user = document.getElementById('user')
         const text = await file.text();   // Read file as string
-        const dec = await decryptAES(text, key.value)
+        const dec = await decryptAES(text, user.value + key.value)
 
-        decryptKey = key.value
+        decryptKey = user.value + key.value
 
         if (!dec.ok) {
           if (dec.reason === "decrypt_failed") {
@@ -143,10 +153,10 @@ async function checkJSON() {
           document.getElementById('file-upload').style.display = 'none'
           document.getElementById('blur-back').style.display = 'none'
           loadPage(a)
-          }
-        } catch (err) {
-          console.error("Invalid JSON file:", err);
         }
+      } catch (err) {
+        console.error("Invalid JSON file:", err);
+      }
 
     });
   } else {
@@ -154,24 +164,25 @@ async function checkJSON() {
     document.getElementById('blur-back').style.display = 'block'
     async function l(reason = '') {
       let key = document.getElementById('key-preload')
+      let user = document.getElementById('user-preload')
       let cn = await getJSON(a, 'json')
-      decryptKey = key.value
-      let content = await decryptAES(cn, key.value)
-      let d = new Date(content.value.meta.els)
-      let td = new Date()
-      let doc = document.getElementById('pass-error')
-
-      if(d < td) {
-        doc.innerHTML = "Encrypted file has expired"
-        deleteJSON(a, 'json')
-        window.location.reload()
-        return
-      }
+      decryptKey = user.value + key.value
+      let content = await decryptAES(cn, decryptKey)
 
       if(!content.ok) {
         doc.innerHTML = "Error decrypting file"
         return
       } else {
+        let d = new Date(content.value.meta.els)
+        let td = new Date()
+        let doc = document.getElementById('pass-error')
+
+        if(d < td) {
+          doc.innerHTML = "Encrypted file has expired"
+          deleteJSON(a, 'json')
+          window.location.reload()
+          return
+        }
         document.getElementById('file-pass').style.display = 'none'
         document.getElementById('blur-back').style.display = 'none'
         loadPage(a)
@@ -188,13 +199,6 @@ async function loadPage(db) {
   let d = await getJSON(db, 'json')
   let d2 = await decryptAES(d, decryptKey)
   let data = d2.value
-  let clear = document.getElementById('clearIndexed')
-
-  clear.addEventListener('mousedown', async function() {
-    await deleteJSON(db, 'json')
-    alert('IndexedDB cleared')
-    window.location.reload()
-  })
 
   if(data != null) {
     forms = data.forms
@@ -203,6 +207,7 @@ async function loadPage(db) {
     notes = data.notes
     checklists = data.checklists
     wuc = data.WUC
+    refDes = data.ref
 
     let ch = document.getElementById('ch')
 
@@ -223,6 +228,7 @@ async function loadPage(db) {
     }
     loadList()
     searchWUC()
+    searchRefDes()
   }
 }
 
@@ -339,7 +345,7 @@ function startPanelScreen() {
     group = new THREE.Group()
 
     const loader = new THREE.GLTFLoader();
-    loader.load('/ref/f16.glb', (gltf) => {
+    loader.load(root + '/f16.glb', (gltf) => {
       mesh = gltf.scene
       scene.add(gltf.scene)
 
@@ -490,6 +496,27 @@ function searchPanel() {
   alert('Could not find Panel')
 }
 
+function searchRefDes() {
+  let input = document.getElementById('searchRefDes').value
+  let output = document.getElementById('res-search-res')
+  let max = 75
+  output.innerHTML = ''
+
+  for(let i = 0; i < refDes.length; i++) {
+    if(refDes[i].ref.toLowerCase().includes(input) || refDes[i].wuc.toLowerCase().includes(input)) {
+      let div = document.createElement('div')
+      let text = document.createTextNode("WUC: " + refDes[i].wuc + " — Ref Designator: " + refDes[i].ref)
+
+      div.appendChild(text)
+      div.appendChild(document.createElement('br'))
+      output.appendChild(div)
+
+      max -= 1
+      if(max <= 0) break
+    }
+  }
+}
+
 function searchWUC() {
   const input = document.getElementById("searchWUC").value.toLowerCase();
   const resultsDiv = document.getElementById("wuc-search-res");
@@ -609,7 +636,7 @@ function openForms(name) {
   const img = new Image();
   const canvas = document.querySelector('#form-canvas')
   const ctx = canvas.getContext('2d')
-  img.src = '/ref/781a.png'; // Relative or absolute path
+  img.src = root + '/781a.png'; // Relative or absolute path
 
   let f = forms[name].job
 
