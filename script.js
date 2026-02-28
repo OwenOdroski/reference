@@ -505,7 +505,7 @@ function searchRefDes() {
   for(let i = 0; i < refDes.length; i++) {
     if(refDes[i].ref.toLowerCase().includes(input) || refDes[i].wuc.toLowerCase().includes(input)) {
       let div = document.createElement('div')
-      let text = document.createTextNode("WUC: " + refDes[i].wuc + " — Ref Designator: " + refDes[i].ref)
+      let text = document.createTextNode("WUC: " + refDes[i].wuc + " — Ref Des: " + refDes[i].ref)
 
       div.appendChild(text)
       div.appendChild(document.createElement('br'))
@@ -884,4 +884,5 @@ function base64ToBytes(base64) {
   }
   return bytes;
 }
+
 
